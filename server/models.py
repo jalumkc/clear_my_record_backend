@@ -1,5 +1,6 @@
 from datetime import datetime
 from clear_my_record_backend.server import dbs
+from enum import Enum
 
 
 class Qualifying_Question(dbs.Model):
@@ -47,3 +48,30 @@ class User(dbs.Model):
 
     def __repr__(self):
         return "<USER: {}".format(self.username)
+
+class Client(dbs.Model):
+    id = dbs.Column(dbs.Integer, primary_key=True)
+    convictions = dbs.relationship()
+
+class Conviction(dbs.Model):
+    id = dbs.Column(dbs.Integer, primary_key=True)
+    # client_id
+    case_number = dbs.Column(dbs.String)
+    court = dbs.Column(dbs.String)
+    jurisdiction = dbs.Column(dbs.String)
+    judge = dbs.Column(dbs.String)
+    record_name = dbs.Column(dbs.String)
+    release_status = dbs.Column(dbs.String)
+    release_date = dbs.Column(dbs.Date)
+    charges = dbs.relationship()
+
+class Charge(dbs.Model):
+    charge_types = Enum('CHARGE', 'FELONY MISDEMEANOR')
+    class_types = Enum('CLASS', 'A B C D E UNDEFINED')
+
+    id = dbs.Column(dbs.Integer, primary_key=True)
+    conviction = dbs.relationship()
+    charge = dbs.Column(dbs.String)
+    sentence = dbs.Column(dbs.String)
+    charge_type = dbs.Column(dbs.Enum(charge_types))
+    class_type = dbs.Column(dbs.Enum(class_types))
